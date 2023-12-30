@@ -8,10 +8,15 @@ import {
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
+import { Input } from '@nextui-org/react';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import React from 'react';
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+  const [isVisible, setIsVisible] = React.useState(false);
 
+  const toggleVisibility = () => setIsVisible(!isVisible);
   return (
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
@@ -25,15 +30,23 @@ export default function LoginForm() {
               Email
             </label>
             <div className="relative">
-              <input
+              {/* <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                
+                placeholder="Enter your email address"
+                
+              /> */}
+              <Input
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                label="Email"
+                variant="bordered"
+                placeholder="Enter your email"
+                className="max-w-xs"
                 required
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              {/* <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
             </div>
           </div>
           <div className="mt-4">
@@ -44,7 +57,7 @@ export default function LoginForm() {
               Password
             </label>
             <div className="relative">
-              <input
+              {/* <input
                 className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="password"
                 type="password"
@@ -52,8 +65,32 @@ export default function LoginForm() {
                 placeholder="Enter password"
                 required
                 minLength={6}
+              /> */}
+              <Input
+                id="password"
+                type={isVisible ? 'text' : 'password'}
+                name="password"
+                label="Password"
+                variant="bordered"
+                placeholder="Enter your password"
+                required
+                minLength={6}
+                endContent={
+                  <button
+                    className="focus:outline-none"
+                    type="button"
+                    onClick={toggleVisibility}
+                  >
+                    {isVisible ? (
+                      <FaEye className="text-default-400 pointer-events-none text-2xl" />
+                    ) : (
+                      <FaEyeSlash className="text-default-400 pointer-events-none text-2xl" />
+                    )}
+                  </button>
+                }
+                className="max-w-xs"
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              {/* <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" /> */}
             </div>
           </div>
         </div>
