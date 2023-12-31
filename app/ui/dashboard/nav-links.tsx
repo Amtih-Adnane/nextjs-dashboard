@@ -4,7 +4,7 @@ import {
   HomeIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/24/outline';
-import { Accordion, AccordionItem } from '@nextui-org/react';
+import { Accordion, AccordionItem, Button } from '@nextui-org/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
@@ -15,116 +15,203 @@ import NavFirstChild from '@/app/ui/components/NavFirstChild';
 
 export default function NavLinks() {
   const pathname = usePathname();
-
-  return links.map((link) => {
-    const LinkIcon = link.icon;
-
-    // Use a unique identifier from your data structure if available
-    const uniqueKey = link.id || link.name;
-
-    return !link.childs ? (
-      <Link
-        key={uniqueKey}
-        href={link.href}
-        className={clsx(
-          'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
-          {
-            'bg-sky-100 text-blue-600': pathname === link.href,
-          },
-        )}
-      >
-        <LinkIcon className="w-6" />
-        <p className="hidden md:block">{link.name}</p>
-      </Link>
-    ) : (
+  return (
+    <>
       <>
-        <Accordion
-          key={uniqueKey}
-          className={clsx(
-            'rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-blue-600 hover:bg-sky-100 md:flex-none md:justify-start md:p-2 md:px-3',
-          )}
-        >
-          <AccordionItem
-            key={uniqueKey}
-            aria-label={link.name}
-            title={
-              <div className="flex grow items-center justify-center gap-2 font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start">
-                <LinkIcon className="w-6" />
-                <span>{link.name}</span>
-              </div>
-            }
-          >
-            {link.childs.map((firstChild) => {
-              const firstChildKey = firstChild.id || firstChild.name;
-
-              return !firstChild.childs ? (
+        <ul className="space-y-2 font-medium">
+          {links.map((link, index) => {
+            const LinkIcon = link.icon;
+            return !link.childs ? (
+              // No Childs
+              <li key={index}>
                 <Link
-                  key={firstChildKey}
-                  href={firstChild.href}
-                  className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                >
-                  {firstChild.name}
-                </Link>
-              ) : (
-                <Accordion
-                  key={firstChildKey}
+                  href={link.href}
                   className={clsx(
-                    'rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-blue-600 hover:bg-sky-100 md:flex-none md:justify-start md:p-2 md:px-3',
+                    'group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700',
+                    {
+                      'bg-sky-100 text-blue-600': pathname === link.href,
+                    },
                   )}
                 >
-                  <AccordionItem
-                    key={firstChildKey}
-                    aria-label={firstChild.name}
-                    title={<span>{firstChild.name}</span>}
+                  <LinkIcon className="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
+                  <span className="ms-3 hidden md:block">{link.name}</span>
+                </Link>
+              </li>
+            ) : (
+              // Has Childs check Again
+              <li key={index}>
+                <button
+                  type="button"
+                  className="group flex w-full items-center rounded-lg p-2 transition duration-75 hover:bg-gray-100"
+                  aria-controls={`dropdown-${link.name}`}
+                  data-collapse-toggle={`dropdown-${link.name}`}
+                >
+                  <LinkIcon className="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white" />
+                  <span className="ms-3 hidden flex-1 whitespace-nowrap text-left md:block ">
+                    {link.name}
+                  </span>
+                  <svg
+                    className="h-3 w-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 10 6"
                   >
-                    {firstChild.childs.map((secondChild) => {
-                      const secondChildKey = secondChild.id || secondChild.name;
-
-                      return !secondChild.childs ? (
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m1 1 4 4 4-4"
+                    />
+                  </svg>
+                </button>
+                <ul
+                  id={`dropdown-${link.name}`}
+                  className="hidden space-y-2 py-2"
+                >
+                  {/* Start 1 Nested Child */}
+                  {link.childs.map((firstChild: any, index) => {
+                    return !firstChild.childs ? (
+                      // No Childs
+                      <li key={index}>
                         <Link
-                          key={secondChildKey}
-                          href={secondChild.href}
-                          className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                        >
-                          {secondChild.name}
-                        </Link>
-                      ) : (
-                        <Accordion
-                          key={secondChildKey}
+                          href={firstChild.href}
                           className={clsx(
-                            'rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-blue-600 hover:bg-sky-100 md:flex-none md:justify-start md:p-2 md:px-3',
+                            'group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700',
+                            {
+                              'bg-sky-100 text-blue-600':
+                                pathname === firstChild.href,
+                            },
                           )}
                         >
-                          <AccordionItem
-                            key={secondChildKey}
-                            aria-label={secondChild.name}
-                            title={<span>{secondChild.name}</span>}
+                          <span className="ms-8">{firstChild.name}</span>
+                        </Link>
+                      </li>
+                    ) : (
+                      // Has Childs check Again
+                      <li key={index}>
+                        <button
+                          type="button"
+                          className="group flex w-full items-center rounded-lg p-2 transition duration-75 hover:bg-gray-100"
+                          aria-controls={`dropdown-${firstChild.name}`}
+                          data-collapse-toggle={`dropdown-${firstChild.name}`}
+                        >
+                          <span className="ms-8 flex-1 whitespace-nowrap text-left  ">
+                            {firstChild.name}
+                          </span>
+                          <svg
+                            className="h-3 w-3"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 10 6"
                           >
-                            {secondChild.childs.map((thirdChild) => {
-                              const thirdChildKey =
-                                thirdChild.id || thirdChild.name;
-
-                              return (
-                                <Link
-                                  key={thirdChildKey}
-                                  href={thirdChild.href}
-                                  className="block px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                                >
-                                  {thirdChild.name}
-                                </Link>
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="m1 1 4 4 4-4"
+                            />
+                          </svg>
+                        </button>
+                        <ul
+                          id={`dropdown-${firstChild.name}`}
+                          className="hidden space-y-2 py-2"
+                        >
+                          {firstChild.childs.map(
+                            (secondChild: any, index: number) => {
+                              return !secondChild.childs ? (
+                                // No Childs
+                                <li key={index}>
+                                  <Link
+                                    href={secondChild.href}
+                                    className={clsx(
+                                      'group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700',
+                                      {
+                                        'bg-sky-100 text-blue-600':
+                                          pathname === secondChild.href,
+                                      },
+                                    )}
+                                  >
+                                    <span className="ms-8">
+                                      {secondChild.name}
+                                    </span>
+                                  </Link>
+                                </li>
+                              ) : (
+                                // Has Childs check Again
+                                <li key={index}>
+                                  <button
+                                    type="button"
+                                    className="group flex w-full items-center rounded-lg p-2 transition duration-75 hover:bg-gray-100"
+                                    aria-controls={`dropdown-${secondChild.name}`}
+                                    data-collapse-toggle={`dropdown-${secondChild.name}`}
+                                  >
+                                    <span className="ms-8 flex-1 whitespace-nowrap text-left  ">
+                                      {secondChild.name}
+                                    </span>
+                                    <svg
+                                      className="h-3 w-3"
+                                      aria-hidden="true"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      fill="none"
+                                      viewBox="0 0 10 6"
+                                    >
+                                      <path
+                                        stroke="currentColor"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth="2"
+                                        d="m1 1 4 4 4-4"
+                                      />
+                                    </svg>
+                                  </button>
+                                  <ul
+                                    id={`dropdown-${secondChild.name}`}
+                                    className="hidden space-y-2 py-2"
+                                  >
+                                    {secondChild.childs.map(
+                                      (ThirdChild: any, index: number) => {
+                                        return (
+                                          <li key={index}>
+                                            <Link
+                                              href={ThirdChild.href}
+                                              className={clsx(
+                                                'group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700',
+                                                {
+                                                  'bg-sky-100 text-blue-600':
+                                                    pathname ===
+                                                    ThirdChild.href,
+                                                },
+                                              )}
+                                            >
+                                              <span className="ms-8">
+                                                {ThirdChild.name}
+                                              </span>
+                                            </Link>
+                                          </li>
+                                        );
+                                      },
+                                    )}
+                                  </ul>
+                                </li>
                               );
-                            })}
-                          </AccordionItem>
-                        </Accordion>
-                      );
-                    })}
-                  </AccordionItem>
-                </Accordion>
-              );
-            })}
-          </AccordionItem>
-        </Accordion>
+                            },
+                          )}
+                        </ul>
+                      </li>
+                    );
+                  })}
+                  {/* End 1 Nested Child */}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
+        <script src="https://unpkg.com/flowbite@1.3.4/dist/flowbite.js"></script>
       </>
-    );
-  });
+    </>
+  );
 }
