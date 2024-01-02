@@ -1,12 +1,11 @@
 import SideNav from '@/app/ui/dashboard/sidenav';
-
+import Sidebar from '@/app/ui/components/Sidebar';
+import Header from '../ui/components/NavBar';
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex h-screen flex-col sm:flex-row sm:overflow-hidden">
-      <div className="w-full flex-none sm:w-64">
-        <SideNav />
-      </div>
-      <div className="flex-grow p-6 sm:overflow-y-auto">{children}</div>
+    <div className="layout">
+      <Sidebar />
+      <main className="layout__main-content p-6">{children}</main>;
     </div>
   );
 }
